@@ -1,0 +1,14 @@
+{
+	"[haxe]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "nadako.vshaxe"
+	},
+
+	"editor.insertSpaces": false,
+
+	"files.trimFinalNewlines": true,
+	"files.trimTrailingWhitespace": true,
+	"files.eol": "\n",
+
+	"haxe.enableCompilationServer": false
+}

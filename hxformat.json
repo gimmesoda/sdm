@@ -1,0 +1,30 @@
+{
+	"indentation": {
+		"character": "tab",
+		"indentCaseLabels": true
+	},
+
+	"lineEnds": {
+		"anonFunctionCurly": {
+			"emptyCurly": "break",
+			"leftCurly": "after",
+			"rightCurly": "after"
+		},
+		"leftCurly": "after",
+		"rightCurly": "after"
+	},
+
+	"sameLine": {
+		"ifBody": "next",
+		"ifElse": "same",
+		"elseBody": "next",
+		"doWhile": "same",
+		"tryBody": "next",
+		"tryCatch": "next"
+	},
+
+	"whitespace": {
+		"switchPolicy": "around",
+		"ifPolicy": "around"
+	}
+}

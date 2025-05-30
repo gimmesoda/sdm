@@ -1,0 +1,8 @@
+{
+	"name": "sdm",
+	"license": "MIT",
+	"releasenote": "first commit",
+	"contributors": ["sadsoda"],
+	"version": "0.0.1-rc",
+	"main": "sdm.Main"
+}
