@@ -47,6 +47,11 @@ class Profile {
 		_dependencies.push(new Dependency(name, type, skipDependencies));
 	}
 
+	public function removeDependency(name:String) {
+		final dependency = Lambda.find(_dependencies, dep -> dep.name == name);
+		_dependencies.remove(dependency);
+	}
+
 	public inline function installDependencies() {
 		for (dependency in _dependencies)
 			dependency.install();

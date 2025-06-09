@@ -74,4 +74,10 @@ class Config extends Profile {
 	public function getProfile(name:String):Null<Profile> {
 		return _profiles.get(name);
 	}
+
+	public function removeEmptyProfiles() {
+		for (name => profile in _profiles)
+			if (profile._dependencies.length == 0)
+				_profiles.remove(name);
+	}
 }

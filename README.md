@@ -42,12 +42,13 @@ Simple commands for installation and management.
 | **setup** | Creates global shortcut | `sdm setup` | |
 | **init** | Creates basic config | `sdm init` | |
 | **install** | Installs dependencies | `sdm install` | `-p/--profile [name]`<br>`-g/--global`<br>`--skip-dependencies` |
-| **add profile** | Adds new profile | `sdm add profile [name]` | |
-| **add haxelib** | Adds Haxelib dependency | `sdm add haxelib [name] [version?]` | `-p/--profile`<br>`--skip-dependencies` |
-| **add git** | Adds Git dependency | `sdm add git [name] [url] [ref?]` | `-p/--profile`<br>`--skip-dependencies` |
-| **add dev** | Adds local dependency | `sdm add dev [name] [path]` | `-p/--profile`<br>`--skip-dependencies` |
+| **profile** | Adds new profile | `sdm add profile [name]` | |
+| **haxelib** | Adds Haxelib dependency | `sdm add haxelib [name] [version?]` | `-p/--profile`<br>`--skip-dependencies` |
+| **git** | Adds Git dependency | `sdm add git [name] [url] [ref?]` | `-p/--profile`<br>`--skip-dependencies` |
+| **dev** | Adds local dependency | `sdm add dev [name] [path]` | `-p/--profile`<br>`--skip-dependencies` |
+| **remove** | Removes dependency | `sdm remove [name]` | `-p/--profile` |
 
-**Global Options:**
+**Options:**
 - `-p/--profile [name]` - Target specific profile
 - `-g/--global` - Install dependencies globally
 - `--skip-dependencies` - Skip installing sub-dependencies
