@@ -42,9 +42,9 @@ Simple commands for installation and management.
 | **setup** | Creates global shortcut | `sdm setup` | |
 | **init** | Creates basic config | `sdm init` | |
 | **install** | Installs dependencies | `sdm install` | `-p/--profile [name]`<br>`-g/--global`<br>`--skip-dependencies` |
-| **haxelib** | Adds Haxelib dependency | `sdm add haxelib [name] [version?]` | `-p/--profile`<br>`--skip-dependencies` |
-| **git** | Adds Git dependency | `sdm add git [name] [url] [ref?]` | `-p/--profile`<br>`--skip-dependencies` |
-| **dev** | Adds local dependency | `sdm add dev [name] [path]` | `-p/--profile`<br>`--skip-dependencies` |
+| **haxelib** | Adds Haxelib dependency | `sdm haxelib [name] [version?]` | `-p/--profile`<br>`--skip-dependencies` |
+| **git** | Adds Git dependency | `sdm git [name] [url] [ref?]` | `-p/--profile`<br>`--skip-dependencies` |
+| **dev** | Adds local dependency | `sdm dev [name] [path]` | `-p/--profile`<br>`--skip-dependencies` |
 | **remove** | Removes dependency | `sdm remove [name]` | `-p/--profile` |
 
 **Options:**
@@ -55,10 +55,10 @@ Simple commands for installation and management.
 **Example Usage:**
 ```sh
 # Add a haxelib to specific profile
-sdm add haxelib hscript 2.6.0 -p dev
+sdm haxelib hscript 2.6.0 -p dev
 
 # Add git dependency with commit ref
-sdm add git heaps https://github.com/HeapsIO/heaps.git 1f6b60a2604d275855629353a72f1bf2417d0e39
+sdm git heaps https://github.com/HeapsIO/heaps.git 1f6b60a2604d275855629353a72f1bf2417d0e39
 
 # Install with all options
 sdm install -p dev --global --skip-dependencies
