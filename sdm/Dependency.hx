@@ -25,7 +25,7 @@ class Dependency {
 		var args = ['--never'];
 		if (skipDependencies)
 			args.push('--skip-dependencies');
-		if (Main.isGlobal)
+		if (Main.global)
 			args.push('--global');
 
 		switch type {

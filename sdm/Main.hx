@@ -9,7 +9,7 @@ using StringTools;
 
 class Main {
 	public static var profile:Null<String> = null;
-	public static var isGlobal:Bool = false;
+	public static var global:Bool = false;
 	public static var skipDependencies:Bool = false;
 
 	private static function main() {
@@ -73,7 +73,7 @@ class Main {
 					profile = args.shift();
 
 				case '--global' | '-g':
-					isGlobal = true;
+					global = true;
 
 				case '--skip-dependencies':
 					skipDependencies = true;
@@ -113,23 +113,31 @@ class Main {
 	}
 
 	private static function _init() {
+		if (FileSystem.exists('sdm.xml') && !FileSystem.isDirectory('sdm.xml')) {
+			Sys.print('Overwrite sdm.xml? [y/n]: ');
+			final input = Sys.stdin().readLine().trim().toLowerCase().charAt(0);
+			if (input != 'y')
+				return;
+		}
+
 		File.saveContent('sdm.xml', '<!DOCTYPE sdm-config>\n<config></config>');
+		Sys.println('sdm.xml created');
 	}
 
 	private static function _install() {
 		if (!FileSystem.exists('sdm.xml') || FileSystem.isDirectory('sdm.xml')) {
-			Sys.println('sdm.xml not initialized!');
+			Sys.println('Missing sdm.xml - run `sdm init` first');
 			return;
 		}
 
-		if (!isGlobal)
+		if (!global)
 			FileSystem.createDirectory('.haxelib');
 
 		final document = Xml.parse(File.getContent('sdm.xml'));
 
 		final config = Config.fromXmlElement(document.firstElement());
 		config.installDependenciesWithProfile(profile);
-		Sys.println('Current libraries:');
+		Sys.println('Installed dependencies:');
 		Sys.command('haxelib', ['list']);
 	}
 
@@ -150,10 +158,12 @@ class Main {
 		document.addChild(config.toXmlElement());
 		File.saveContent('sdm.xml', Printer.print(document, true));
 
+		Sys.print('Added $name');
+		if (version != null)
+			Sys.print(' ($version)');
 		if (profile != null)
-			Sys.println('Added haxelib dependency $name to $profile');
-		else
-			Sys.println('Added haxelib dependency $name');
+			Sys.print(' to $profile');
+		Sys.print('\n');
 	}
 
 	private static function _git(name:String, url:String, ?ref:String) {
@@ -173,10 +183,12 @@ class Main {
 		document.addChild(config.toXmlElement());
 		File.saveContent('sdm.xml', Printer.print(document, true));
 
+		Sys.print('Added $name ($url)');
+		if (ref != null)
+			Sys.print(' ($ref)');
 		if (profile != null)
-			Sys.println('Added git dependency $name to $profile');
-		else
-			Sys.println('Added git dependency $name');
+			Sys.print(' to $profile');
+		Sys.print('\n');
 	}
 
 	private static function _dev(name:String, path:String) {
@@ -196,10 +208,10 @@ class Main {
 		document.addChild(config.toXmlElement());
 		File.saveContent('sdm.xml', Printer.print(document, true));
 
+		Sys.print('Added $name ($path)');
 		if (profile != null)
-			Sys.println('Added dev dependency $name to $profile');
-		else
-			Sys.println('Added dev dependency $name');
+			Sys.print(' to $profile');
+		Sys.print('\n');
 	}
 
 	private static function _remove(name:String) {
@@ -225,8 +237,8 @@ class Main {
 		File.saveContent('sdm.xml', Printer.print(document, true));
 
 		if (profile != null)
-			Sys.println('Removed dependency $name from $profile');
+			Sys.println('Removed $name from $profile');
 		else
-			Sys.println('Removed dependency $name');
+			Sys.println('Removed $name');
 	}
 }
