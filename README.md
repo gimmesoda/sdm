@@ -1,6 +1,6 @@
 # **Soda's Dependency Manager (SDM)**
 
-**A lightweight and flexible dependency manager for Haxe with profile support and XML configuration**
+**A lightweight dependency manager for Haxe with profile support and XML configuration**
 
 **SDM** is a simple tool for managing dependencies in Haxe projects. It allows you to easily install libraries from Haxelib, Git, or local paths, and switch between different build profiles.
 
