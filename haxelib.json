@@ -1,8 +1,9 @@
 {
 	"name": "sdm",
 	"license": "MIT",
-	"releasenote": "remove command",
+	"releasenote": "i'll ignore this field, ok?",
 	"contributors": ["sadsoda"],
-	"version": "0.1.0",
-	"main": "sdm.Main"
+	"version": "0.2.0",
+	"classPath": "src",
+	"main": "Main"
 }
