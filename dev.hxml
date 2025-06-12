@@ -1,1 +1,2 @@
---run sdm.Main
+--class-path src
+--run Main

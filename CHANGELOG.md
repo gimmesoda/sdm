@@ -1,6 +1,11 @@
-# 0.1.0
+# SDM changelog
 
-Key changes made:
-1. Replaced all `add [type]` commands with direct commands in the command table
-2. Removed `add profile` command
-3. Auto profile management
+## 0.2.0
+
+- New `help` message
+- Shortcut for Unix-based systems
+
+## 0.1.0
+
+- Removed `add` command
+- Auto profile management
