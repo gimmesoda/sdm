@@ -20,6 +20,6 @@ class HelpCommand extends Command {
 			buf.add(cmd.buildHelpString(nameLength));
 		}
 
-		Sys.println(buf.toString());
+		IO.showInfo(buf.toString());
 	}
 }

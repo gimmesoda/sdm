@@ -17,10 +17,10 @@ class SetupCommand extends Command {
 
 		if (Sys.systemName().toLowerCase().startsWith('windows')) {
 			File.saveContent('$haxepath/sdm.cmd', '@haxelib --global run sdm %*');
-			Sys.println('Created Windows shortcut');
+			IO.showInfo('Created Windows shortcut');
 		}
 
 		File.saveContent('$haxepath/sdm', '#!/bin/sh\nhaxelib --global run sdm "$@"');
-		Sys.println('Created Unix shortcut');
+		IO.showInfo('Created Unix shortcut');
 	}
 }

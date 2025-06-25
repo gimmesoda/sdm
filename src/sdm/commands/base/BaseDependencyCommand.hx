@@ -9,10 +9,8 @@ import core.cli.commands.Command;
 
 class BaseDependencyCommand extends Command {
 	public function execute(args:Array<String>, app:Application) {
-		Sys.setCwd(app.callDirectory);
-
-		if (FileSystem.exists('sdm.xml') && !FileSystem.isDirectory('sdm.xml'))
-			ConfigParser.parse(File.getContent('sdm.xml'));
+		Sys.setCwd(app.workingDirectory);
+		Config.readOrThrow();
 	}
 
 	private function _resolveParams(args:Array<String>):{
@@ -55,12 +53,15 @@ class BaseDependencyCommand extends Command {
 		return profile != null ? (Config.profiles.get(profile) ?? (Config.profiles[profile] = [])) : Config.dependencies;
 	}
 
-	private function _addDependency(profile:Array<Dependency>, name:String, type:DependencyType, skipSubDeps:Bool) {
-		final dep = Lambda.find(profile, dep -> dep.name == name);
+	private function _addDependency(profile:Array<Dependency>, name:String, type:DependencyType, skipSubDeps:Bool):Dependency {
+		var dep = Lambda.find(profile, dep -> dep.name == name);
 		if (dep != null) {
 			dep.type = type;
 			dep.skipSubDeps = skipSubDeps;
-		} else
-			profile.push({name: name, type: type, skipSubDeps: skipSubDeps});
+		} else {
+			dep = {name: name, type: type, skipSubDeps: skipSubDeps}
+			profile.push(dep);
+		}
+		return dep;
 	}
 }

@@ -16,10 +16,10 @@ class DevCommand extends BaseDependencyCommand {
 		final params = _resolveParams(args);
 
 		final profile = _resolveTargetProfile(params.profile);
-		_addDependency(profile, params.name, DDev(params.others[0]), params.skipSubDeps);
+		final dependency = _addDependency(profile, params.name, DDev(params.others[0]), params.skipSubDeps);
 
-		File.saveContent('sdm.xml', ConfigPrinter.print());
+		Config.write();
 
-		Sys.println('Added dependency ${params.name} (${params.others[0]})');
+		IO.showInfo('Added dependency ${params.name} (${params.others[0]})');
 	}
 }

@@ -1,3 +1,5 @@
+import sdm.SDM;
+
 function main() {
-	new sdm.SDM().run(Sys.args());
+	new SDM().run(Sys.args());
 }

@@ -5,5 +5,8 @@
 	"contributors": ["sadsoda"],
 	"version": "0.2.0",
 	"classPath": "src",
-	"main": "Main"
+	"main": "Main",
+	"dependencies": {
+		"hxIni": ""
+	}
 }

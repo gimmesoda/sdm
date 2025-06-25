@@ -12,8 +12,12 @@ class InstallCommand extends Command {
 	}
 
 	public function execute(args:Array<String>, app:Application) {
+		Sys.setCwd(app.workingDirectory);
+
+		Attributes.read();
+
 		var global:Bool = false;
-		var profile:Null<String> = null;
+		var profile:Null<String> = Attributes.installProfile;
 
 		while (args.length > 0) {
 			switch args.shift() {
@@ -23,8 +27,6 @@ class InstallCommand extends Command {
 					profile = args.shift();
 			}
 		}
-
-		Sys.setCwd(app.callDirectory);
 
 		if (FileSystem.exists('sdm.xml') && !FileSystem.isDirectory('sdm.xml'))
 			ConfigParser.parse(File.getContent('sdm.xml'));
@@ -38,7 +40,7 @@ class InstallCommand extends Command {
 		if (deps.length == 0)
 			return;
 
-		Sys.setCwd(app.callDirectory);
+		Sys.setCwd(app.workingDirectory);
 		if (!global)
 			Sys.command('haxelib', ['newrepo']);
 

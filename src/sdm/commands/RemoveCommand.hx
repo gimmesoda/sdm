@@ -15,7 +15,7 @@ class RemoveCommand extends Command {
 	}
 
 	public function execute(args:Array<String>, app:Application) {
-		Sys.setCwd(app.callDirectory);
+		Sys.setCwd(app.workingDirectory);
 
 		if (FileSystem.exists('sdm.xml') && !FileSystem.isDirectory('sdm.xml'))
 			ConfigParser.parse(File.getContent('sdm.xml'));
@@ -47,6 +47,6 @@ class RemoveCommand extends Command {
 
 		File.saveContent('sdm.xml', ConfigPrinter.print());
 
-		Sys.println('Removed dependency $name');
+		IO.showInfo('Removed dependency $name');
 	}
 }

@@ -16,13 +16,13 @@ class GitCommand extends BaseDependencyCommand {
 		final params = _resolveParams(args);
 
 		final profile = _resolveTargetProfile(params.profile);
-		_addDependency(profile, params.name, DGit(params.others[0], params.others[1]), params.skipSubDeps);
+		final dependency = _addDependency(profile, params.name, DGit(params.others[0], params.others[1]), params.skipSubDeps);
 
-		File.saveContent('sdm.xml', ConfigPrinter.print());
+		Config.write();
 
 		if (params.others.length > 1)
-			Sys.println('Added dependency ${params.name} (${params.others[0]}/${params.others[1]})');
+			IO.showInfo('Added dependency ${params.name} (${params.others[0]}/${params.others[1]})');
 		else
-			Sys.println('Added dependency ${params.name} (${params.others[0]})');
+			IO.showInfo('Added dependency ${params.name} (${params.others[0]})');
 	}
 }

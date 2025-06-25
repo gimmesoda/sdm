@@ -12,15 +12,16 @@ class InitCommand extends Command {
 	}
 
 	public function execute(args:Array<String>, app:Application) {
-		final path = Path.join([app.callDirectory, 'sdm.xml']);
+		final path = Path.join([app.workingDirectory, 'sdm.xml']);
 
 		if (FileSystem.exists(path) && !FileSystem.isDirectory(path)) {
-			Sys.print('Overwrite `sdm.xml`? [y/n]: ');
-			if (Sys.stdin().readLine().toLowerCase().charAt(0) != 'y')
-				return;
+			IO.ask('Overwrite file `sdm.xml`?', r -> if (r) {
+				File.saveContent(path, '<!DOCTYPE sdm-config>\n<config/>');
+				IO.showInfo('File `sdm.xml` overwritten');
+			});
+		} else {
+			File.saveContent(path, '<!DOCTYPE sdm-config>\n<config/>');
+			IO.showInfo('File `sdm.xml` created');
 		}
-
-		File.saveContent(path, '<!DOCTYPE sdm-config>\n<config/>');
-		Sys.println('Created `sdm.xml`');
 	}
 }

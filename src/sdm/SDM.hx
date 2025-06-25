@@ -1,20 +1,22 @@
 package sdm;
 
-import sdm.commands.*;
+import sys.io.File;
+import sys.FileSystem;
 import core.cli.Application;
 
 class SDM extends Application {
 	override function _setupCommands() {
-		registerCommand(new HelpCommand());
+		#if !building_extension
+		registerCommand(new sdm.commands.HelpCommand());
+		registerCommand(new sdm.commands.SetupCommand());
+		#end
 
-		registerCommand(new SetupCommand());
+		registerCommand(new sdm.commands.InitCommand());
+		registerCommand(new sdm.commands.InstallCommand());
 
-		registerCommand(new InitCommand());
-		registerCommand(new InstallCommand());
-
-		registerCommand(new HaxelibCommand());
-		registerCommand(new GitCommand());
-		registerCommand(new DevCommand());
-		registerCommand(new RemoveCommand());
+		registerCommand(new sdm.commands.HaxelibCommand());
+		registerCommand(new sdm.commands.GitCommand());
+		registerCommand(new sdm.commands.DevCommand());
+		registerCommand(new sdm.commands.RemoveCommand());
 	}
 }

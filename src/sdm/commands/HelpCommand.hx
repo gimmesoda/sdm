@@ -49,6 +49,6 @@ class HelpCommand extends CoreHelpCommand {
 			buf.add('  ');
 			buf.add(flagDoc[1]);
 		}
-		Sys.println(buf.toString());
+		IO.showInfo(buf.toString());
 	}
 }

@@ -1,11 +1,24 @@
 package sdm;
 
+import sys.io.File;
+import sys.FileSystem;
 import haxe.xml.Printer;
 import sdm.Dependency;
 
 class Config {
 	public static var dependencies:Array<Dependency> = [];
 	public static var profiles:Map<String, Array<Dependency>> = [];
+
+	public static inline function readOrThrow() {
+		if (FileSystem.exists('sdm.xml') && !FileSystem.isDirectory('sdm.xml'))
+			ConfigParser.parse(File.getContent('sdm.xml'));
+		else
+			throw 'SDM not initialized';
+	}
+
+	public static inline function write() {
+		File.saveContent('sdm.xml', ConfigPrinter.print());
+	}
 }
 
 class ConfigParser {

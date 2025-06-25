@@ -6,7 +6,7 @@ import core.cli.commands.Command;
 using StringTools;
 
 class Application {
-	public var callDirectory(default, null):String;
+	public var workingDirectory(default, null):String;
 
 	private var _commands:Array<Command>;
 
@@ -28,7 +28,7 @@ class Application {
 	}
 
 	public function run(args:Array<String>) {
-		callDirectory = args.pop();
+		workingDirectory = args.pop();
 
 		final cmd = _resolveCommand(args) ?? Lambda.find(_commands, cmd -> cmd.name == 'help');
 		args.remove(cmd.name);

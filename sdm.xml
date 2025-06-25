@@ -1,0 +1,4 @@
+<!DOCTYPE sdm-config>
+<config>
+	<dependency type="haxelib" name="hxIni"/>
+</config>
