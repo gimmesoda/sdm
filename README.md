@@ -61,5 +61,5 @@ sdm haxelib hscript 2.6.0 -p dev
 sdm git heaps https://github.com/HeapsIO/heaps.git 1f6b60a2604d275855629353a72f1bf2417d0e39
 
 # Install with all options
-sdm install -p dev --global --skip-dependencies
+sdm install -p dev --global
 ```
