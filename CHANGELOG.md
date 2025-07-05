@@ -4,6 +4,7 @@
 
 - Renamed --skip-sub-deps to -b/--blind
 - Refactored sdm.xml
+- Added .sdmattributes.ini
 
 ## 0.2.0
 
