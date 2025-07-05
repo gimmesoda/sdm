@@ -41,16 +41,16 @@ Simple commands for installation and management.
 |---------|-------------|-------|---------|
 | **setup** | Creates global shortcut | `sdm setup` | |
 | **init** | Creates basic config | `sdm init` | |
-| **install** | Installs dependencies | `sdm install` | `-p/--profile [name]`<br>`-g/--global`<br>`--skip-sub-deps` |
-| **haxelib** | Adds Haxelib dependency | `sdm haxelib [name] [version?]` | `-p/--profile`<br>`--skip-sub-deps` |
-| **git** | Adds Git dependency | `sdm git [name] [url] [ref?]` | `-p/--profile`<br>`--skip-sub-deps` |
-| **dev** | Adds local dependency | `sdm dev [name] [path]` | `-p/--profile`<br>`--skip-sub-deps` |
+| **install** | Installs dependencies | `sdm install` | `-p/--profile [name]`<br>`-g/--global` |
+| **haxelib** | Adds Haxelib dependency | `sdm haxelib [name] [version?]` | `-p/--profile`<br>`-b/--blind` |
+| **git** | Adds Git dependency | `sdm git [name] [url] [ref?]` | `-p/--profile`<br>`-b/--blind` |
+| **dev** | Adds local dependency | `sdm dev [name] [path]` | `-p/--profile`<br>`-b/--blind` |
 | **remove** | Removes dependency | `sdm remove [name]` | `-p/--profile` |
 
 **Options:**
 - `-p/--profile [name]` - Target specific profile
 - `-g/--global` - Install dependencies globally
-- `--skip-sub-deps` - Skip installing sub-dependencies
+- `-b/--blind` - Skip installing sub-dependencies
 
 **Example Usage:**
 ```sh

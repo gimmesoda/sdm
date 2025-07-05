@@ -3,7 +3,7 @@
 	"license": "MIT",
 	"releasenote": "i'll ignore this field, ok?",
 	"contributors": ["sadsoda"],
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"classPath": "src",
 	"main": "Main",
 	"dependencies": {

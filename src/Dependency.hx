@@ -1,6 +1,8 @@
-package sdm;
-
-typedef Dependency = {name:String, type:DependencyType, skipSubDeps:Bool}
+typedef Dependency = {
+	name:String,
+	type:DependencyType,
+	blind:Bool
+}
 
 enum DependencyType {
 	DHaxelib(?version:String);
