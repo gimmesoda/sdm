@@ -79,7 +79,7 @@ class Main {
 				Config.write();
 
 			case 'install':
-				Sys.println('Current profile: ${flags.profile}');
+				Sys.println('Current profile: ${flags.profile ?? Attributes.installProfile}');
 				Sys.setCwd(workingDirectory);
 				final list = (flags.profile != null || Attributes.installProfile != null)
 					? Config.dependencies.concat(Config.profiles[flags.profile ?? Attributes.installProfile] ??= [])

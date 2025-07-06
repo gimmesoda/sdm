@@ -23,12 +23,12 @@ Simple commands for installation and management.
 ```xml
 <!DOCTYPE sdm-config>
 <config>
-	<dependency version="4.3.2" type="haxelib" name="hxcpp"/>
+	<haxelib version="4.3.2" name="hxcpp"/>
 	<profile name="Haxelib Test">
-		<dependency version="2.6.0" type="haxelib" name="hscript"/>
+		<haxelib version="2.6.0" name="hscript"/>
 	</profile>
 	<profile name="Git Test">
-		<dependency url="https://github.com/HaxeFoundation/hscript.git" type="git" ref="f718d5f1a651296f6d9bcd6059d570e0d4e511b5" name="hscript"/>
+		<git url="https://github.com/HaxeFoundation/hscript.git" ref="f718d5f1a651296f6d9bcd6059d570e0d4e511b5" name="hscript"/>
 	</profile>
 </config>
 ```

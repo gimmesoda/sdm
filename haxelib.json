@@ -1,12 +1,13 @@
 {
 	"name": "sdm",
 	"license": "MIT",
-	"releasenote": "i'll ignore this field, ok?",
-	"contributors": ["sadsoda"],
+	"releasenote": "Added .ini config file support",
+	"contributors": ["gimmesoda"],
 	"version": "0.3.0",
 	"classPath": "src",
 	"main": "Main",
 	"dependencies": {
 		"hxIni": ""
-	}
+	},
+	"url": "https://github.com/gimmesoda/sdm"
 }
