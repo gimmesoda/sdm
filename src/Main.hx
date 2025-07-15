@@ -5,6 +5,7 @@ import haxe.ds.Vector;
 import haxe.io.Path;
 
 using StringTools;
+using Tools;
 
 typedef Flags = {
 	global:Bool,
