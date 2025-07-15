@@ -24,9 +24,6 @@ class Main {
 		while (workingDirectory.fastCodeAt(workingDirectory.length - 1) == '/'.code)
 			workingDirectory = workingDirectory.substr(0, workingDirectory.length - 1);
 
-		Config.parseOrThrow();
-		Attributes.parse();
-
 		final flags = _readFlags(args);
 
 		switch args[0].shift() {
@@ -47,23 +44,23 @@ class Main {
 					File.saveContent('$workingDirectory/sdm.xml', '<!DOCTYPE sdm-config>\n<config/>');
 
 			case 'haxelib':
-				Sys.setCwd(workingDirectory);
+				Config.parseOrThrow();
 				final list = (flags.profile != null)
 					? (Config.profiles[flags.profile] ??= [])
 					: Config.dependencies;
-				Config.addOrOverwrite(list, args[0].shift(), DHaxelib(args[0].shift()), flags.blind);
+				Config.addOrOverwrite(list, args[0].shift(), DHaxelib(args[0].shift().getStringOrNull()), flags.blind);
 				Config.write();
 
 			case 'git':
-				Sys.setCwd(workingDirectory);
+				Config.parseOrThrow();
 				final list = (flags.profile != null)
 					? (Config.profiles[flags.profile] ??= [])
 					: Config.dependencies;
-				Config.addOrOverwrite(list, args[0].shift(), DGit(args[0].shift(), args[0].shift()), flags.blind);
+				Config.addOrOverwrite(list, args[0].shift(), DGit(args[0].shift(), args[0].shift().getStringOrNull()), flags.blind);
 				Config.write();
 
 			case 'dev':
-				Sys.setCwd(workingDirectory);
+				Config.parseOrThrow();
 				final list = (flags.profile != null)
 					? (Config.profiles[flags.profile] ??= [])
 					: Config.dependencies;
@@ -71,7 +68,7 @@ class Main {
 				Config.write();
 
 			case 'remove':
-				Sys.setCwd(workingDirectory);
+				Config.parseOrThrow();
 				final list = (flags.profile != null)
 					? (Config.profiles[flags.profile] ??= [])
 					: Config.dependencies;
@@ -79,29 +76,30 @@ class Main {
 				Config.write();
 
 			case 'install':
+				Config.parseOrThrow();
+				Attributes.parse();
 				Sys.println('Current profile: ${flags.profile ?? Attributes.installProfile}');
-				Sys.setCwd(workingDirectory);
 				final list = (flags.profile != null || Attributes.installProfile != null)
 					? Config.dependencies.concat(Config.profiles[flags.profile ?? Attributes.installProfile] ??= [])
 					: Config.dependencies;
 
-				if (!flags.global && list.length > 0 && !FileSystem.exists('.haxelib/'))
-					Sys.command('haxelib', ['newrepo']);
+				if (!flags.global && list.length > 0 && !FileSystem.exists('$workingDirectory/.haxelib/'))
+					Sys.command('haxelib', ['newrepo', '--cwd', workingDirectory]);
 
 				for (dep in list) {
 					switch dep.type {
 						case DHaxelib(version):
-							Sys.command('haxelib', ['--never', 'install', dep.name]
+							Sys.command('haxelib', ['--never', 'install', dep.name, '--cwd', workingDirectory]
 								.concat(version != null ? [version] : [])
 								.concat(flags.global ? ['--global'] : [])
 								.concat(flags.blind ? ['--skip-dependencies'] : []));
 						case DGit(url, ref):
-							Sys.command('haxelib', ['--never', 'git', dep.name, url]
+							Sys.command('haxelib', ['--never', 'git', dep.name, url, '--cwd', workingDirectory]
 								.concat(ref != null ? [ref] : [])
 								.concat(flags.global ? ['--global'] : [])
 								.concat(flags.blind ? ['--skip-dependencies'] : []));
 						case DDev(path):
-							Sys.command('haxelib', ['--never', 'dev', dep.name, path]
+							Sys.command('haxelib', ['--never', 'dev', dep.name, path, '--cwd', workingDirectory]
 								.concat(flags.global ? ['--global'] : [])
 								.concat(flags.blind ? ['--skip-dependencies'] : []));
 					}

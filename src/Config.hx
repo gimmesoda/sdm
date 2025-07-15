@@ -27,7 +27,7 @@ class Config {
 		for (dep in fast.elements) {
 			var type:Null<DependencyType>;
 			if (dep.name == 'haxelib' || (dep.name == 'dependency' && dep.att.type == 'haxelib'))
-				type = DHaxelib(dep.has.version ? dep.att.version : '');
+				type = DHaxelib(dep.has.version ? dep.att.version : null);
 			else if (dep.name == 'git' || (dep.name == 'dependency' && dep.att.type == 'git'))
 				type = DGit(dep.att.url, dep.has.ref ? dep.att.ref : null);
 			else if (dep.name == 'dev' || (dep.name == 'dependency' && dep.att.type == 'dev'))
