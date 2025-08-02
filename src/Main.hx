@@ -85,24 +85,30 @@ class Main {
 					: Config.dependencies;
 
 				if (!flags.global && list.length > 0 && !FileSystem.exists('$workingDirectory/.haxelib/'))
-					Sys.command('haxelib', ['newrepo', '--cwd', workingDirectory]);
+					Sys.command('haxelib', ['--cwd', workingDirectory, 'newrepo']);
 
 				for (dep in list) {
 					switch dep.type {
 						case DHaxelib(version):
-							Sys.command('haxelib', ['--never', 'install', dep.name, '--cwd', workingDirectory]
-								.concat(version != null ? [version] : [])
-								.concat(flags.global ? ['--global'] : [])
-								.concat(flags.blind ? ['--skip-dependencies'] : []));
+							var args = [ '--cwd', workingDirectory, '--never' ];
+							if (flags.global) args.push('--global');
+							if (flags.blind) args.push('--skip-dependencies');
+							args = args.concat([ 'install', dep.name ]);
+							if (version != null) args.push(version);
+							Sys.command('haxelib', args);
 						case DGit(url, ref):
-							Sys.command('haxelib', ['--never', 'git', dep.name, url, '--cwd', workingDirectory]
-								.concat(ref != null ? [ref] : [])
-								.concat(flags.global ? ['--global'] : [])
-								.concat(flags.blind ? ['--skip-dependencies'] : []));
+							var args = [ '--cwd', workingDirectory, '--never' ];
+							if (flags.global) args.push('--global');
+							if (flags.blind) args.push('--skip-dependencies');
+							args = args.concat([ 'git', dep.name, url ]);
+							if (ref != null) args.push(ref);
+							Sys.command('haxelib', args);
 						case DDev(path):
-							Sys.command('haxelib', ['--never', 'dev', dep.name, path, '--cwd', workingDirectory]
-								.concat(flags.global ? ['--global'] : [])
-								.concat(flags.blind ? ['--skip-dependencies'] : []));
+							var args = [ '--cwd', workingDirectory ];
+							if (flags.global) args.push('--global');
+							if (flags.blind) args.push('--skip-dependencies');
+							args = args.concat([ 'dev', dep.name, path ]);
+							Sys.command('haxelib', args);
 					}
 				}
 		}
