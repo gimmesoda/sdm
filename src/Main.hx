@@ -90,28 +90,29 @@ class Main {
 				for (dep in list) {
 					switch dep.type {
 						case DHaxelib(version):
-							var args = [ '--cwd', workingDirectory, '--never' ];
-							if (flags.global) args.push('--global');
-							if (flags.blind) args.push('--skip-dependencies');
-							args = args.concat([ 'install', dep.name ]);
+							var args = getHaxelibStartArgs(flags, dep, true).concat([ 'install', dep.name ]);
 							if (version != null) args.push(version);
 							Sys.command('haxelib', args);
 						case DGit(url, ref):
-							var args = [ '--cwd', workingDirectory, '--never' ];
-							if (flags.global) args.push('--global');
-							if (flags.blind) args.push('--skip-dependencies');
-							args = args.concat([ 'git', dep.name, url ]);
+							var args = getHaxelibStartArgs(flags, dep, true).concat([ 'git', dep.name, url ]);
 							if (ref != null) args.push(ref);
 							Sys.command('haxelib', args);
 						case DDev(path):
-							var args = [ '--cwd', workingDirectory ];
-							if (flags.global) args.push('--global');
-							if (flags.blind) args.push('--skip-dependencies');
-							args = args.concat([ 'dev', dep.name, path ]);
+							var args = getHaxelibStartArgs(flags, dep, false).concat([ 'dev', dep.name, path ]);
 							Sys.command('haxelib', args);
 					}
 				}
 		}
+	}
+
+	static function getHaxelibStartArgs(flags:Flags, dep:Dependency, never:Bool):Array<String>
+	{
+		var args = [ '--cwd', workingDirectory ];
+		if (never)
+			args.push('--never');
+		if (flags.global) args.push('--global');
+		if (flags.blind || dep.blind) args.push('--skip-dependencies');
+		return args;
 	}
 
 	static function _readFlags(args:Vector<Array<String>>):Flags {
