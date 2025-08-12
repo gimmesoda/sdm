@@ -4,9 +4,14 @@ import haxe.xml.Access;
 import sys.io.File;
 import sys.FileSystem;
 
+typedef Profile = {
+	dependencies:Array<Dependency>,
+	tasks:Array<Task>,
+}
+
 class Config {
-	public static var dependencies:Array<Dependency> = [];
-	public static var profiles:Map<String, Array<Dependency>> = [];
+	public static var global:Profile = { dependencies: [], tasks: [] };
+	public static var profiles:Map<String, Profile> = [];
 
 	public static function parseOrThrow() {
 		final path = '${Main.workingDirectory}/sdm.xml';
@@ -15,16 +20,27 @@ class Config {
 		final xml = Xml.parse(File.getContent(path));
 		final fast = new Access(xml.firstElement());
 
-		_parseDependencies(fast, dependencies);
+		_parseProfile(fast, global);
 
 		for (profile in fast.nodes.profile) {
-			final list = profiles[profile.att.name] ??= [];
-			_parseDependencies(profile, list);
+			final list = profiles[profile.att.name] ??= { dependencies: [], tasks: [] };
+			_parseProfile(profile, list);
 		}
 	}
 
-	private static function _parseDependencies(fast:Access, list:Array<Dependency>) {
+	private static function _parseProfile(fast:Access, profile:Profile) {
 		for (dep in fast.elements) {
+			// tasks
+			if (dep.name == 'task') {
+				var cmd = dep.att.cmd;
+				var dir = dep.has.dir ? dep.att.dir : null;
+
+				addTask(profile, cmd, dir);
+
+				continue;
+			}
+
+			// dependencies
 			var type:Null<DependencyType>;
 			if (dep.name == 'haxelib' || (dep.name == 'dependency' && dep.att.type == 'haxelib'))
 				type = DHaxelib(dep.has.version ? dep.att.version : null);
@@ -37,7 +53,7 @@ class Config {
 			final name = dep.att.name;
 			final blind = _isBlindDependency(dep);
 
-			addOrOverwrite(list, name, type, blind);
+			addOrOverwriteDependency(profile, name, type, blind);
 		}
 	}
 
@@ -47,13 +63,16 @@ class Config {
 
 		final conf = Xml.createElement('config');
 
-		for (dep in dependencies)
+		for (dep in global.dependencies)
 			conf.addChild(_writeDependency(dep));
+		for (tsk in global.tasks)
+			conf.addChild(_writeTask(tsk));
 
-		for (prf => list in profiles) {
+		for (name => profile in profiles) {
 			final xml = Xml.createElement('profile');
-			xml.set('name', prf);
-			for (dep in list) xml.addChild(_writeDependency(dep));
+			xml.set('name', name);
+			for (dep in profile.dependencies) xml.addChild(_writeDependency(dep));
+			for (tsk in profile.tasks) xml.addChild(_writeTask(tsk));
 			conf.addChild(xml);
 		}
 
@@ -85,18 +104,29 @@ class Config {
 		return xml;
 	}
 
-	public static function addOrOverwrite(list:Array<Dependency>, name:String, type:DependencyType, blind:Bool) {
-		final found = Lambda.find(list, d -> d.name == name);
+	private static function _writeTask(tsk:Task):Xml {
+		final xml = Xml.createElement('task');
+		xml.set('cmd', tsk.cmd);
+		if (tsk.dir != null) xml.set('dir', tsk.dir);
+		return xml;
+	}
+
+	public static function addOrOverwriteDependency(profile:Profile, name:String, type:DependencyType, blind:Bool) {
+		final found = Lambda.find(profile.dependencies, d -> d.name == name);
 		if (found != null) {
 			found.type = type;
 			found.blind = blind;
 		} else {
-			list.push({
+			profile.dependencies.push({
 				name: name,
 				type: type,
 				blind: blind
 			});
 		}
+	}
+
+	public static function addTask(profile:Profile, cmd:String, ?dir:String) {
+		profile.tasks.push({ cmd: cmd, dir: dir });
 	}
 
 	private static inline function _isBlindDependency(fast:Access):Bool {

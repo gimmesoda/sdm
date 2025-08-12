@@ -46,6 +46,7 @@ Simple commands for installation and management.
 | **git** | Adds Git dependency | `sdm git [name] [url] [ref?]` | `-p/--profile`<br>`-b/--blind` |
 | **dev** | Adds local dependency | `sdm dev [name] [path]` | `-p/--profile`<br>`-b/--blind` |
 | **remove** | Removes dependency | `sdm remove [name]` | `-p/--profile` |
+| **task** | Adds post-install cmd | `sdm task [cmd] [dir?]` | |
 
 **Options:**
 - `-p/--profile [name]` - Target specific profile
@@ -54,12 +55,20 @@ Simple commands for installation and management.
 
 **Example Usage:**
 ```sh
+sdm init
+
 # Add a haxelib to specific profile
 sdm haxelib hscript 2.6.0 -p dev
 
 # Add git dependency with commit ref
 sdm git heaps https://github.com/HeapsIO/heaps.git 1f6b60a2604d275855629353a72f1bf2417d0e39
 
+# Add a dependency that needs to be built manually
+sdm haxelib hxcpp
+sdm git hashcord https://github.com/CCobaltDev/hashcord.git
+sdm task "haxelib run hxcpp Build.xml" ".\.haxelib\hashcord\git\project"
+sdm task "copy .\.haxelib\hashcord\git\project\out\discord_rpc.hdll discord_rpc.hdll"
+
 # Install with all options
-sdm install -p dev --global
+sdm install -p dev
 ```

@@ -1,5 +1,10 @@
 # SDM changelog
 
+## 0.4.0
+
+- Added post-install tasks (WIP)
+- Fixed infinite loop caused by profile flag
+
 ## 0.3.0
 
 - Renamed --skip-sub-deps to -b/--blind

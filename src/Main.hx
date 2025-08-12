@@ -46,63 +46,92 @@ class Main {
 
 			case 'haxelib':
 				Config.parseOrThrow();
-				final list = (flags.profile != null)
-					? (Config.profiles[flags.profile] ??= [])
-					: Config.dependencies;
-				Config.addOrOverwrite(list, args[0].shift(), DHaxelib(args[0].shift().getStringOrNull()), flags.blind);
+				final profile = (flags.profile != null)
+					? (Config.profiles[flags.profile] ??= { dependencies: [], tasks: [] })
+					: Config.global;
+				Config.addOrOverwriteDependency(profile, args[0].shift(), DHaxelib(args[0].shift().getStringOrNull()), flags.blind);
 				Config.write();
 
 			case 'git':
 				Config.parseOrThrow();
-				final list = (flags.profile != null)
-					? (Config.profiles[flags.profile] ??= [])
-					: Config.dependencies;
-				Config.addOrOverwrite(list, args[0].shift(), DGit(args[0].shift(), args[0].shift().getStringOrNull()), flags.blind);
+				final profile = (flags.profile != null)
+					? (Config.profiles[flags.profile] ??= { dependencies: [], tasks: [] })
+					: Config.global;
+				Config.addOrOverwriteDependency(profile, args[0].shift(), DGit(args[0].shift(), args[0].shift().getStringOrNull()), flags.blind);
 				Config.write();
 
 			case 'dev':
 				Config.parseOrThrow();
-				final list = (flags.profile != null)
-					? (Config.profiles[flags.profile] ??= [])
-					: Config.dependencies;
-				Config.addOrOverwrite(list, args[0].shift(), DDev(args[0].shift()), flags.blind);
+				final profile = (flags.profile != null)
+					? (Config.profiles[flags.profile] ??= { dependencies: [], tasks: [] })
+					: Config.global;
+				Config.addOrOverwriteDependency(profile, args[0].shift(), DDev(args[0].shift()), flags.blind);
 				Config.write();
 
 			case 'remove':
 				Config.parseOrThrow();
-				final list = (flags.profile != null)
-					? (Config.profiles[flags.profile] ??= [])
-					: Config.dependencies;
-				if (list.length > 0) list.remove(Lambda.find(list, d -> d.name == args[0].shift()));
+				if (flags.profile == null || Config.profiles.exists(flags.profile)) {
+					final profile = flags.profile != null ? Config.profiles[flags.profile] : Config.global;
+					if (profile.dependencies.length > 0) profile.dependencies.remove(Lambda.find(profile.dependencies, d -> d.name == args[0].shift()));
+				}
+				Config.write();
+
+			case 'task':
+				Config.parseOrThrow();
+				final profile = (flags.profile != null)
+					? (Config.profiles[flags.profile] ??= { dependencies: [], tasks: [] })
+					: Config.global;
+				Config.addTask(profile, args[0].shift(), args[0].shift());
 				Config.write();
 
 			case 'install':
 				Config.parseOrThrow();
 				Attributes.parse();
 				Sys.println('Current profile: ${flags.profile ?? Attributes.installProfile}');
-				final list = (flags.profile != null || Attributes.installProfile != null)
-					? Config.dependencies.concat(Config.profiles[flags.profile ?? Attributes.installProfile] ??= [])
-					: Config.dependencies;
+				if (flags.profile == null || Config.profiles.exists(flags.profile)) {
+					final customProfile = flags.profile != null;
+					final profile = customProfile ? Config.profiles[flags.profile] : Config.global;
 
-				if (!flags.global && list.length > 0 && !FileSystem.exists('$workingDirectory/.haxelib/'))
+					if (!flags.global && profile.dependencies.length > 0 && !FileSystem.exists('$workingDirectory/.haxelib/'))
 					Sys.command('haxelib', ['--cwd', workingDirectory, 'newrepo']);
 
-				for (dep in list) {
-					switch dep.type {
-						case DHaxelib(version):
-							var args = getHaxelibStartArgs(flags, dep, true).concat([ 'install', dep.name ]);
-							if (version != null) args.push(version);
-							Sys.command('haxelib', args);
-						case DGit(url, ref):
-							var args = getHaxelibStartArgs(flags, dep, true).concat([ 'git', dep.name, url ]);
-							if (ref != null) args.push(ref);
-							Sys.command('haxelib', args);
-						case DDev(path):
-							var args = getHaxelibStartArgs(flags, dep, false).concat([ 'dev', dep.name, path ]);
-							Sys.command('haxelib', args);
+					for (dep in (customProfile ? profile.dependencies.concat(Config.global.dependencies) : profile.dependencies)) {
+						switch dep.type {
+							case DHaxelib(version):
+								var args = getHaxelibStartArgs(flags, dep, true).concat([ 'install', dep.name ]);
+								if (version != null) args.push(version);
+								Sys.command('haxelib', args);
+							case DGit(url, ref):
+								var args = getHaxelibStartArgs(flags, dep, true).concat([ 'git', dep.name, url ]);
+								if (ref != null) args.push(ref);
+								Sys.command('haxelib', args);
+							case DDev(path):
+								var args = getHaxelibStartArgs(flags, dep, false).concat([ 'dev', dep.name, path ]);
+								Sys.command('haxelib', args);
+						}
 					}
+
+					for (tsk in (customProfile ? profile.tasks.concat(Config.global.tasks) : profile.tasks))
+						runTask(tsk);
 				}
 		}
+	}
+
+	private static function runTask(task:Task) {
+		if (task.dir.getStringOrNull() != null && Path.isAbsolute(task.dir)) {
+			Sys.println('SYSTEM VIOLATION: `${task.cmd}` in `${task.dir}` blocked');
+			return;
+		}
+		final dir = task.dir == null ? workingDirectory : Path.join([ workingDirectory, task.dir ]);
+		if (!dir.startsWith(workingDirectory)) {
+			Sys.println('SYSTEM VIOLATION: `${task.cmd}` in `$dir` blocked');
+			return;
+		}
+
+		final cwd = Sys.getCwd();
+		Sys.setCwd(dir);
+		Sys.command(task.cmd);
+		Sys.setCwd(cwd);
 	}
 
 	private static function getHaxelibStartArgs(flags:Flags, dep:Dependency, never:Bool):Array<String>
@@ -132,12 +161,12 @@ class Main {
 					args[0].splice(i, 1);
 				case '-p' | '--profile':
 					flags.profile = args[0][i + 1];
-					args[0].slice(i, 2);
+					args[0].splice(i, 2);
 				case '--skip-sub-deps' | '--skip-dependencies':
 					Sys.println('${args[0][i]} is deprecated, use -b/--blind instead');
 					flags.blind = true;
 					args[0].splice(i, 1);
-				case _:
+				default:
 					i++;
 			}
 		}

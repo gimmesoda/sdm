@@ -1,5 +1,0 @@
-<!DOCTYPE sdm-config>
-<config>
-	<haxelib name="hxIni"/>
-	<haxelib name="thx.semver"/>
-</config>
