@@ -16,7 +16,7 @@ typedef Flags = {
 class Main {
 	public static var workingDirectory:String;
 
-	static function main() {
+	private static function main() {
 		// it's like a pointer, got it?
 		final args = new Vector<Array<String>>(1, Sys.args());
 
@@ -105,7 +105,7 @@ class Main {
 		}
 	}
 
-	static function getHaxelibStartArgs(flags:Flags, dep:Dependency, never:Bool):Array<String>
+	private static function getHaxelibStartArgs(flags:Flags, dep:Dependency, never:Bool):Array<String>
 	{
 		var args = [ '--cwd', workingDirectory ];
 		if (never)
@@ -115,7 +115,7 @@ class Main {
 		return args;
 	}
 
-	static function _readFlags(args:Vector<Array<String>>):Flags {
+	private static function _readFlags(args:Vector<Array<String>>):Flags {
 		final flags:Flags = {
 			global: false,
 			blind: false

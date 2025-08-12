@@ -23,7 +23,7 @@ class Config {
 		}
 	}
 
-	static function _parseDependencies(fast:Access, list:Array<Dependency>) {
+	private static function _parseDependencies(fast:Access, list:Array<Dependency>) {
 		for (dep in fast.elements) {
 			var type:Null<DependencyType>;
 			if (dep.name == 'haxelib' || (dep.name == 'dependency' && dep.att.type == 'haxelib'))
@@ -62,7 +62,7 @@ class Config {
 		File.saveContent('${Main.workingDirectory}/sdm.xml', Printer.print(doc, true));
 	}
 
-	static function _writeDependency(dep:Dependency):Xml {
+	private static function _writeDependency(dep:Dependency):Xml {
 		final xml = Xml.createElement(switch dep.type {
 			case DHaxelib(_): 'haxelib';
 			case DGit(_, _): 'git';
@@ -99,7 +99,7 @@ class Config {
 		}
 	}
 
-	static inline function _isBlindDependency(fast:Access):Bool {
+	private static inline function _isBlindDependency(fast:Access):Bool {
 		return (fast.has.blind && fast.att.blind == 'true')
 			|| (fast.has.resolve('skip-sub-deps') && fast.att.resolve('skip-sub-deps') == 'true')
 			|| (fast.has.resolve('skip-dependencies') && fast.att.resolve('skip-dependencies') == 'true');
