@@ -43,7 +43,7 @@ Simple commands for installation and management.
 | **init** | Creates basic config | `sdm init` | |
 | **install** | Installs dependencies | `sdm install` | `-p/--profile [name]`<br>`-g/--global` |
 | **haxelib** | Adds Haxelib dependency | `sdm haxelib [name] [version?]` | `-p/--profile`<br>`-b/--blind` |
-| **git** | Adds Git dependency | `sdm git [name] [url] [ref?]` | `-p/--profile`<br>`-b/--blind` |
+| **git** | Adds Git dependency | `sdm git [name] [url] [ref?] [dir?]` | `-p/--profile`<br>`-b/--blind` |
 | **dev** | Adds local dependency | `sdm dev [name] [path]` | `-p/--profile`<br>`-b/--blind` |
 | **remove** | Removes dependency | `sdm remove [name]` | `-p/--profile` |
 | **task** | Adds post-install cmd | `sdm task [cmd] [dir?]` | |

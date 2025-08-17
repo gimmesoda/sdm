@@ -3,6 +3,7 @@
 	<git url="https://github.com/HeapsIO/heaps.git" ref="1f6b60a2604d275855629353a72f1bf2417d0e39" name="heaps"/>
 	<haxelib name="hxcpp"/>
 	<git url="https://github.com/CCobaltDev/hashcord.git" name="hashcord"/>
+	<git url="https://github.com/HaxeFoundation/hashlink.git" ref="master" name="hashlink" dir="other/haxelib/"/>
 	<task dir=".\.haxelib\hashcord\git\project" cmd="haxelib run hxcpp Build.xml"/>
 	<task cmd="copy .\.haxelib\hashcord\git\project\out\discord_rpc.hdll discord_rpc.hdll"/>
 	<profile name="dev">

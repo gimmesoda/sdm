@@ -6,6 +6,6 @@ typedef Dependency = {
 
 enum DependencyType {
 	DHaxelib(?version:String);
-	DGit(url:String, ?ref:String);
+	DGit(url:String, ?ref:String, ?dir:String);
 	DDev(path:String);
 }

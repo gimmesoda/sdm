@@ -1,7 +1,5 @@
 import sys.FileSystem;
 import sys.io.File;
-import Dependency.DependencyType;
-import haxe.ds.Vector;
 import haxe.io.Path;
 
 using StringTools;
@@ -18,16 +16,16 @@ class Main {
 
 	private static function main() {
 		// it's like a pointer, got it?
-		final args = new Vector<Array<String>>(1, Sys.args());
+		final args = Sys.args();
 
-		workingDirectory = Path.normalize(args[0].pop());
+		workingDirectory = Path.normalize(args.pop());
 
 		while (workingDirectory.fastCodeAt(workingDirectory.length - 1) == '/'.code)
 			workingDirectory = workingDirectory.substr(0, workingDirectory.length - 1);
 
 		final flags = _readFlags(args);
 
-		switch args[0].shift() {
+		switch args.shift() {
 			case 'help':
 				Sys.println('TODO: new help message');
 
@@ -49,7 +47,7 @@ class Main {
 				final profile = (flags.profile != null)
 					? (Config.profiles[flags.profile] ??= { dependencies: [], tasks: [] })
 					: Config.global;
-				Config.addOrOverwriteDependency(profile, args[0].shift(), DHaxelib(args[0].shift().getStringOrNull()), flags.blind);
+				Config.addOrOverwriteDependency(profile, args.shift(), DHaxelib(args.shift().getStringOrNull()), flags.blind);
 				Config.write();
 
 			case 'git':
@@ -57,7 +55,7 @@ class Main {
 				final profile = (flags.profile != null)
 					? (Config.profiles[flags.profile] ??= { dependencies: [], tasks: [] })
 					: Config.global;
-				Config.addOrOverwriteDependency(profile, args[0].shift(), DGit(args[0].shift(), args[0].shift().getStringOrNull()), flags.blind);
+				Config.addOrOverwriteDependency(profile, args.shift(), DGit(args.shift(), args.shift().getStringOrNull(), args.shift().getStringOrNull()), flags.blind);
 				Config.write();
 
 			case 'dev':
@@ -65,14 +63,14 @@ class Main {
 				final profile = (flags.profile != null)
 					? (Config.profiles[flags.profile] ??= { dependencies: [], tasks: [] })
 					: Config.global;
-				Config.addOrOverwriteDependency(profile, args[0].shift(), DDev(args[0].shift()), flags.blind);
+				Config.addOrOverwriteDependency(profile, args.shift(), DDev(args.shift()), flags.blind);
 				Config.write();
 
 			case 'remove':
 				Config.parseOrThrow();
 				if (flags.profile == null || Config.profiles.exists(flags.profile)) {
 					final profile = flags.profile != null ? Config.profiles[flags.profile] : Config.global;
-					if (profile.dependencies.length > 0) profile.dependencies.remove(Lambda.find(profile.dependencies, d -> d.name == args[0].shift()));
+					if (profile.dependencies.length > 0) profile.dependencies.remove(Lambda.find(profile.dependencies, d -> d.name == args.shift()));
 				}
 				Config.write();
 
@@ -81,7 +79,7 @@ class Main {
 				final profile = (flags.profile != null)
 					? (Config.profiles[flags.profile] ??= { dependencies: [], tasks: [] })
 					: Config.global;
-				Config.addTask(profile, args[0].shift(), args[0].shift());
+				Config.addTask(profile, args.shift(), args.shift());
 				Config.write();
 
 			case 'install':
@@ -93,7 +91,7 @@ class Main {
 					final profile = customProfile ? Config.profiles[flags.profile] : Config.global;
 
 					if (!flags.global && profile.dependencies.length > 0 && !FileSystem.exists('$workingDirectory/.haxelib/'))
-					Sys.command('haxelib', ['--cwd', workingDirectory, 'newrepo']);
+					Sys.command('haxelib', ['-cwd', workingDirectory, 'newrepo']);
 
 					for (dep in (customProfile ? profile.dependencies.concat(Config.global.dependencies) : profile.dependencies)) {
 						switch dep.type {
@@ -101,9 +99,10 @@ class Main {
 								var args = getHaxelibStartArgs(flags, dep, true).concat([ 'install', dep.name ]);
 								if (version != null) args.push(version);
 								Sys.command('haxelib', args);
-							case DGit(url, ref):
+							case DGit(url, ref, dir):
 								var args = getHaxelibStartArgs(flags, dep, true).concat([ 'git', dep.name, url ]);
 								if (ref != null) args.push(ref);
+								if (dir != null) args.push(dir);
 								Sys.command('haxelib', args);
 							case DDev(path):
 								var args = getHaxelibStartArgs(flags, dep, false).concat([ 'dev', dep.name, path ]);
@@ -134,9 +133,8 @@ class Main {
 		Sys.setCwd(cwd);
 	}
 
-	private static function getHaxelibStartArgs(flags:Flags, dep:Dependency, never:Bool):Array<String>
-	{
-		var args = [ '--cwd', workingDirectory ];
+	private static function getHaxelibStartArgs(flags:Flags, dep:Dependency, never:Bool):Array<String> {
+		var args = [ '-cwd', workingDirectory ];
 		if (never)
 			args.push('--never');
 		if (flags.global) args.push('--global');
@@ -144,28 +142,28 @@ class Main {
 		return args;
 	}
 
-	private static function _readFlags(args:Vector<Array<String>>):Flags {
+	private static function _readFlags(args:Array<String>):Flags {
 		final flags:Flags = {
 			global: false,
 			blind: false
 		}
 
 		var i = 0;
-		while (i < args[0].length) {
-			switch args[0][i]?.toLowerCase() {
+		while (i < args.length) {
+			switch args[i]?.toLowerCase() {
 				case '-g' | '--global':
 					flags.global = true;
-					args[0].splice(i, 1);
+					args.splice(i, 1);
 				case '-b' | '--blind':
 					flags.blind = true;
-					args[0].splice(i, 1);
+					args.splice(i, 1);
 				case '-p' | '--profile':
-					flags.profile = args[0][i + 1];
-					args[0].splice(i, 2);
+					flags.profile = args[i + 1];
+					args.splice(i, 2);
 				case '--skip-sub-deps' | '--skip-dependencies':
-					Sys.println('${args[0][i]} is deprecated, use -b/--blind instead');
+					Sys.println('${args[i]} is deprecated, use -b/--blind instead');
 					flags.blind = true;
-					args[0].splice(i, 1);
+					args.splice(i, 1);
 				default:
 					i++;
 			}

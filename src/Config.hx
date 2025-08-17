@@ -45,7 +45,7 @@ class Config {
 			if (dep.name == 'haxelib' || (dep.name == 'dependency' && dep.att.type == 'haxelib'))
 				type = DHaxelib(dep.has.version ? dep.att.version : null);
 			else if (dep.name == 'git' || (dep.name == 'dependency' && dep.att.type == 'git'))
-				type = DGit(dep.att.url, dep.has.ref ? dep.att.ref : null);
+				type = DGit(dep.att.url, dep.has.ref ? dep.att.ref : null, dep.has.dir ? dep.att.dir : null);
 			else if (dep.name == 'dev' || (dep.name == 'dependency' && dep.att.type == 'dev'))
 				type = DDev(dep.att.path);
 			else continue;
@@ -94,9 +94,10 @@ class Config {
 		switch dep.type {
 			case DHaxelib(version):
 				if (version != null) xml.set('version', version);
-			case DGit(url, ref):
+			case DGit(url, ref, dir):
 				xml.set('url', url);
 				if (ref != null) xml.set('ref', ref);
+				if (dir != null) xml.set('dir', dir);
 			case DDev(path):
 				xml.set('path', path);
 		}
