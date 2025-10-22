@@ -1,0 +1,5 @@
+-lib tink_cli
+-D no-deprecation-warnings
+
+-cp src
+--run Main

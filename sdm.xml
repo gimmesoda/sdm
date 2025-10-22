@@ -1,0 +1,4 @@
+<!DOCTYPE sdm-config>
+<config>
+	<haxelib name="hscript"/>
+</config>
