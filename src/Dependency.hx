@@ -1,3 +1,5 @@
+import sys.thread.Thread;
+import tink.cli.Prompt;
 import tink.io.Worker;
 import sys.io.Process;
 
@@ -19,7 +21,7 @@ class Dependency {
 		this.blind = blind;
 	}
 
-	public function install():Promise<Noise> {
+	public function install(prompt:Prompt):Promise<Noise> {
 		var args:Array<String> = ['--never'];
 		if (blind) args.push('--skip-dependencies');
 
@@ -37,14 +39,29 @@ class Dependency {
 		}
 
 		return Worker.get().work(() -> {
-			final proc:Process = new Process('haxelib', args);
-			switch proc.exitCode() {
-				case 0: Success(Noise);
-				default:
-					var message:String = proc.stderr.readAll().toString().trim();
-					message = message.substring(message.lastIndexOf('\n' + 1));
-					Failure(new Error(message.length == 0 ? 'null message' : message));
-			}
+			final code:Int = Sys.command('haxelib', args);
+			code == 0 ? Success(Noise) : Failure(new Error(Std.string(code)));
 		});
+	}
+
+	public function buildElement(prompt:Prompt):Xml {
+		final el:Xml = Xml.createElement('dependency');
+		el.set('name', name);
+		if (blind) el.set('blind', 'true');
+		switch kind {
+			case DHaxelib(version):
+				el.nodeName = 'haxelib';
+				if (version != null) el.set('version', version);
+			case DGit(url, ref, dir):
+				el.nodeName = 'git';
+				el.set('url', url);
+				if (ref != null) el.set('ref', ref);
+				if (dir != null) {
+					if (ref == null) prompt.printeln('No git ref provided');
+					else el.set('dir', dir);
+				}
+		}
+
+		return el;
 	}
 }

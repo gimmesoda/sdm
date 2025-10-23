@@ -18,12 +18,11 @@ class Installation {
 	}
 
 	public inline function add(dep:Dependency):Promise<Noise> {
-		return worker.work(() -> lockQueue
-			? Failure(new Error(NotAcceptable, 'Queue is locked'))
-			: {
+		return worker.work(() -> !lockQueue
+			? {
 				queue.push(dep);
 				Success(Noise);
-			});
+			} : Failure(new Error(NotAcceptable, 'Queue is locked')));
 	}
 
 	public function run(prompt:Prompt) {
@@ -32,49 +31,49 @@ class Installation {
 			return;
 		}
 
+		lockQueue = false;
+
 		prompt.println('Installing dependencies...');
 		renderBar(prompt);
 
-		final errors:Array<Error> = [];
+		final failed:Array<String> = [];
 
-		for (dep in queue) dep.install().handle((result:Outcome<Noise, Error>) -> {
+		for (dep in queue) dep.install(prompt).handle((result:Outcome<Noise, Error>) -> {
 			switch result {
-				case Failure(failure): errors.push(failure);
+				case Failure(failure): failed.push(dep.name);
 				default:
 			}
 
 			installed++;
 			renderBar(prompt, false, installed == queue.length);
 		});
-		prompt.println('');
 
-		if (errors.length > 0) {
-			prompt.println('Errors occurred:');
-			for (e in errors) prompt.println(e.toString());
-		}
+		if (failed.length > 0) {
+			prompt.printeln('Failed to install libraries:');
+			for (f in failed) prompt.printeln('  > $f');
+		} else
+			prompt.printsln('All libraries installed successfully!');
+
+		lockQueue = false;
 	}
 
 	private function renderBar(prompt:Prompt, firstTime:Bool = true, completed:Bool = false) {
 		final filled:Int = Math.round(installed / queue.length * PROGRESS_BAR_WIDTH);
 		final empty:Int = PROGRESS_BAR_WIDTH - filled;
 
-		final buf:StringBuf = new StringBuf();
-		buf.addChar('['.code);
-		for (i in 0...filled) buf.addChar('#'.code);
-		for (i in 0...empty) buf.addChar(' '.code);
-		buf.add('] ');
+		final bar:StringBuf = new StringBuf();
+		bar.addChar('['.code);
+		for (i in 0...filled) bar.addChar('#'.code);
+		for (i in 0...empty) bar.addChar(' '.code);
+		bar.addChar(']'.code);
 
 		if (!firstTime) {
-			prompt.print('\x1b[u');
-			prompt.print('\x1b[K');
+			prompt.print('\033[u');
+			prompt.print('\033[0J');
 		}
-		prompt.print('\x1b[s');
+		prompt.print('\033[s');
 
-		if (completed) prompt.print('\x1b[32m');
-
-		prompt.print(buf.toString());
-		prompt.print('$installed / ${queue.length}');
-
-		if (completed) prompt.print('\x1b[39m');
+		final message:String = '$bar  $installed / ${queue.length}';
+		completed ? prompt.printsln(message) : prompt.println(message);
 	}
 }

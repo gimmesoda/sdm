@@ -1,0 +1,6 @@
+-lib tink_cli
+
+-cp src
+-m Main
+
+-cpp bin/cpp
