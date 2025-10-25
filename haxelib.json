@@ -1,0 +1,10 @@
+{
+	"name": "sdm",
+	"license": "MIT",
+	"releasenote": "total rewrite and better arguments processing",
+	"contributors": ["gimmesoda"],
+	"version": "0.5.0",
+	"classPath": "src",
+	"main": "Main",
+	"url": "https://github.com/gimmesoda/sdm"
+}

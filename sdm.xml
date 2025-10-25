@@ -1,5 +1,0 @@
-<!DOCTYPE sdm-config>
-<config>
-	<git url="https://github.com/gimmesoda/hldiscord_rpc.git" ref="dev" name="hldiscord_rpc" dir="src"/>
-	<haxelib name="hscript"/>
-</config>

@@ -1,0 +1,1 @@
+@haxelib --global run sdm %*
