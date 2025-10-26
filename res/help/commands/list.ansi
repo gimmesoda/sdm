@@ -1,5 +1,5 @@
 Display dependencies
 
-[2msdm[22m [32mlist[39m [-p profilename]
+[2msdm[22m [32mlist[39m [-p <profile>]
 
--p profilename   Specify the working profile
+-p <profile>   Specify the working profile

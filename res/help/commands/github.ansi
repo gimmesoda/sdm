@@ -1,9 +1,11 @@
 Add Git dependency from GitHub
 
-[2msdm[22m [32mgithub[39m name author/repo [ref [dir]]
+[2msdm[22m [32mgithub[39m <name> <author>/<repo> [<ref> [<dir>]] [-p <profile>]
 
-name     Dependency name
-author   GitHub source author
-repo     GitHub source repository
-ref      Branch name/tag name/committish to use
-dir      Sub-directory in the git repo where the code is located
+name           Dependency name
+author         GitHub source author
+repo           GitHub source repository
+ref            Branch name/tag name/committish to use
+dir            Sub-directory in the git repo where the code is located
+
+-p <profile>   Specify the working profile

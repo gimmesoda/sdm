@@ -1,8 +1,10 @@
 Add Git dependency
 
-[2msdm[22m [32mgit[39m name url [ref [dir]]
+[2msdm[22m [32mgit[39m <name> <url> [<ref> [<dir>]] [-p <profile>]
 
-name   Dependency name
-url    Git source URL
-ref    Branch name/tag name/committish to use
-dir    Sub-directory in the git repo where the code is located
+name           Dependency name
+url            Git source URL
+ref            Branch name/tag name/committish to use
+dir            Sub-directory in the git repo where the code is located
+
+-p <profile>   Specify the working profile

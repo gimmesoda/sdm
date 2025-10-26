@@ -1,5 +1,5 @@
 [36mSoda's Dependency Manager (SDM)[39m
-Use [32mhelp[39m <command name> to get full help on a command
+Use [32mhelp[39m <command> to get full help on a command
 [32msetup[39m     Сreate shortcuts for quick access
 [32minit[39m      Create configuration file (sdm.xml)
 [32mhaxelib[39m   Add Haxelib dependency
