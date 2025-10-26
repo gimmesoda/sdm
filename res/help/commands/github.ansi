@@ -1,3 +1,9 @@
-Add GitHub dependency
+Add Git dependency from GitHub
 
 [2msdm[22m [32mgithub[39m name author/repo [ref [dir]]
+
+name     Dependency name
+author   GitHub source author
+repo     GitHub source repository
+ref      Branch name/tag name/committish to use
+dir      Sub-directory in the git repo where the code is located

@@ -36,15 +36,44 @@ class App {
 		}
 
 		switch command {
-			case 'setup': setupShortcuts();
-			case 'init': initConfig();
-			case 'haxelib': addHaxelibDependency(args.shift(), args.shift(), blind, profile);
-			case 'git': addGitDependency(args.shift(), args.shift(), args.shift(), args.shift(), blind, profile);
-			case 'github': addGitDependency(args.shift(), 'https://github.com/${args.shift()}.git', args.shift(), args.shift(), blind, profile);
-			case 'remove': removeDependency(args.shift(), profile);
-			case 'list': listDependencies(profile);
-			case 'install': installDependencies(global, profile);
-			default: showHelp(args.shift());
+			case 'setup':
+				if (!checkArgs(command, args, 0, 0)) return;
+				setupShortcuts();
+
+			case 'init':
+				if (!checkArgs(command, args, 0, 0)) return;
+				initConfig();
+
+			case 'haxelib':
+				if (!checkArgs(command, args, 1, 2)) return;
+				addHaxelibDependency(args.shift(), args.shift(), blind, profile);
+
+			case 'git':
+				if (!checkArgs(command, args, 2, 4)) return;
+				addGitDependency(args.shift(), args.shift(), args.shift(), args.shift(), blind, profile);
+
+			case 'github':
+				if (!checkArgs(command, args, 2, 4)) return;
+				addGitDependency(args.shift(), 'https://github.com/${args.shift()}.git', args.shift(), args.shift(), blind, profile);
+
+			case 'remove':
+				if (!checkArgs(command, args, 1, 1)) return;
+				removeDependency(args.shift(), profile);
+
+			case 'list':
+				if (!checkArgs(command, args, 0, 0)) return;
+				listDependencies(profile);
+
+			case 'install':
+				if (!checkArgs(command, args, 0, 0)) return;
+				installDependencies(global, profile);
+
+			case 'help':
+				if (!checkArgs(command, args, 0, 1)) return;
+				showHelp(args.shift());
+
+			default:
+				showHelp(args.shift());
 		}
 	}
 
@@ -122,7 +151,17 @@ class App {
 		Sys.println('$message\n');
 	}
 
+	private function checkArgs(cmd:String, args:Array<String>, min:Int, max:Int):Bool {
+		if (args.length < min || args.length > max) {
+			showHelp(cmd);
+			return false;
+		}
+		return true;
+	}
+
+	private static var systemName:String;
 	private static inline function isWin():Bool {
-		return Sys.systemName() == 'Windows';
+		systemName ??= Sys.systemName();
+		return systemName == 'Windows';
 	}
 }

@@ -1,3 +1,6 @@
 Add Haxelib dependency
 
 [2msdm[22m [32mhaxelib[39m name [version]
+
+name      Dependency name
+version   Haxelib version

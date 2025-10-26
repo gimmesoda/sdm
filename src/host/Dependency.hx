@@ -31,13 +31,8 @@ class Dependency {
 					return null;
 				}
 				final url:String = e.get('url');
-				var ref:Null<String> = e.exists('ref') ? e.get('ref') : null;
+				final ref:Null<String> = e.exists('ref') ? e.get('ref') : null;
 				final dir:Null<String> = e.exists('dir') ? e.get('dir') : null;
-
-				if (dir != null && ref == null) {
-					Sys.println('\033[33mDependency $name does not have ref attributes, trying main...');
-					ref = 'main';
-				}
 
 				return new Dependency(name, DGit(url, ref, dir), blind);
 
@@ -74,8 +69,10 @@ class Dependency {
 
 			case DGit(url, ref, dir):
 				args = args.concat(['git', name, url]);
-				if (ref != null) args.push(ref);
-				if (dir != null) args.push(dir);
+				if (ref != null) {
+					args.push(ref);
+					if (dir != null) args.push(dir);
+				}
 		}
 
 		return args;

@@ -4,7 +4,7 @@ Use [32mhelp[39m <command name> to get full help on a command
 [32minit[39m      Create configuration file (sdm.xml)
 [32mhaxelib[39m   Add Haxelib dependency
 [32mgit[39m       Add Git dependency
-[32mgithub[39m    Add GitHub dependency
+[32mgithub[39m    Add Git dependency from GitHub
 [32mremove[39m    Remove dependency
 [32mlist[39m      Display dependencies
 [32minstall[39m   Install dependencies

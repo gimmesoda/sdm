@@ -1,3 +1,7 @@
 Remove dependency
 
-[2msdm[22m [32mremove[39m name
+[2msdm[22m [32mremove[39m name [-p profilename]
+
+name             Dependency name
+
+-p profilename   Specify the working profile
